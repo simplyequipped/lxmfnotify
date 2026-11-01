@@ -1,0 +1,23 @@
+#!/bin/sh
+# js8mon-parse: a lxmfnotify pipe program for js8mon lines. Reads one line,
+# splits it into its columns, and prints the message as CALL: TEXT.
+# Change the echo at the end to send other columns along.
+
+read -r utc snr dt freq mode msg
+
+# the origin callsign is the first word when it ends with a colon
+case "$msg" in
+  *:\ *) call=${msg%%:*}
+         text=${msg#*: } ;;
+  *)     call=
+         text=$msg ;;
+esac
+
+if [ -n "$call" ]; then
+  echo "$call: $text"
+else
+  echo "$text"
+fi
+
+# for example, with the signal report and mode:
+# echo "$call ($snr dB $mode): $text"
